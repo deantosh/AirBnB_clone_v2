@@ -1,0 +1,38 @@
+#!/usr/bin/python3
+"""
+   Defines Base class that defines all common
+   attributes/methods for other classes
+"""
+
+
+import uuid
+from datetime import datetime
+
+
+class BaseModel:
+    """defines a base class"""
+
+    def __init__(self):
+        """intialize base class"""
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+
+    def __str__(self):
+        """returns: str representation of the object"""
+        obj_str = "[{}] ({}) {}".format(
+            type(self).__name__, self.id, self.__dict__)
+        return obj_str
+
+    def save(self):
+        """updates updated_at time with current datetime"""
+        self.updated_at = datetime.now()
+
+    def to_dict(self):
+        """returns:obj dict containing all key/values of the instance"""
+        # copy obj dict / to alter
+        obj_dict = self.__dict__.copy()
+        obj_dict["__class__"] = type(self).__name__
+        obj_dict["created_at"] = self.created_at.isoformat()
+        obj_dict["updataed_at"] = self.updated_at.isoformat()
+        return obj_dict
