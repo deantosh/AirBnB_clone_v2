@@ -1,4 +1,4 @@
-"""tests for the base_model module"""
+"""Tests file: models/base_model.py"""
 
 import os
 import json
