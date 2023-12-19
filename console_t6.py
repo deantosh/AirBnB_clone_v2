@@ -19,7 +19,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_EOF(self, line):
-        """Builtin EOF command to gracefully catch error."""
+        """Builtin EOF command to gracefully exit program"""
         return True
 
 
