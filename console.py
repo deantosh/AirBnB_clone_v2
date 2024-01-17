@@ -90,7 +90,34 @@ class HBNBCommand(cmd.Cmd):
         if not validate_classname(args):
             return
 
+        # create object
         obj = class_list[args[0]]()
+
+        if len(args) > 1:
+            for param in args[1:]:
+                k, v = param.split('=')
+                # validate input data
+                if is_int(v):
+                    value = int(v)
+                elif is_float(v):
+                    value = float(v)
+                else:
+                    # string validation
+                    if v.startswith('"'):
+                        # Escape double quotes in string
+                        v = v.replace('"', '\"')
+                        # Replace underscore with a space
+                        v = v.replace('_', ' ')
+                        # Replace opening double quotes with single quotes
+                        value = v.replace('"', "", 1)
+                        # Replace cosing double quotes with single quotes
+                        value = value[::-1].replace('"', "", 1)[::-1]
+                    else:
+                        return
+                # set attribute to object
+                setattr(obj, k, value)
+
+        # save object
         obj.save()
 
         print(obj.id)
@@ -181,54 +208,6 @@ class HBNBCommand(cmd.Cmd):
             setattr(obj_instance, args[2], value)
             # save to JSON file
             models.storage.save()
-
-    def obj_count(self, class_name):
-        """Counts the number of instances of a specific class"""
-        num_instances = 0
-        # get list of stored objects
-        all_objects = models.storage.all()
-        for key in all_objects.keys():
-            # get classname from key
-            args = key.split()
-            if args[0] == class_name:
-                num_instances += 1
-        print(num_instances)
-
-    def default(self, line):
-        """
-        Overrrides the default behavior for unrecognized commands.
-        Executes undocumented commands which include:
-            - <class_name>.all()
-            - <class_name>.count()
-            - <class_name>.show(<id>)
-            - <class_name>.destroy(<id>)
-            - <class_name>.update(<id>, <attribute_name>, <attribute_value>)
-            - <class_name>.update(<id>, <dictionary representation>)
-        """
-        # list of commands
-        commands = {
-            "all": self.do_all,
-            # "count": self.obj_count,
-            "show": self.do_show,
-            "destroy": self.do_destroy,
-            "update": self.do_update
-        }
-
-        # get the args from line
-        pattern = r"^(\w+)\.(\w+)\((.*)\)"
-        # empty tuple to store the match found
-        arg_t = ()
-        args = re.match(pattern, line)
-        if args:
-            args_t = args.groups()
-        if len(args_t) < 2 or args_t[0] not in class_list.keys()\
-           or args_t[1] not in commands.keys():
-            # do default behavior
-            super().default(line)
-            return
-
-        if args_t[1] in ["all"]:
-            commands[args_t[1]](args_t[0])
 
 
 # HELPER FUNCTIONS
