@@ -24,10 +24,18 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """
         returns: __objects dictionary
         """
+        if cls:
+            cls_dict = {}
+            # Loop through all objects
+            for k, v in FileStorage.__objects.items():
+                if cls == v.__class__ or cls == v.__class__.__name__:
+                    cls_dict[k] = v
+            return cls_dict
+
         return FileStorage.__objects
 
     def new(self, obj):
@@ -78,3 +86,14 @@ class FileStorage:
                     k: class_list[k.split(".")[0]](**v)
                     for k, v in obj.items()
                 }
+
+    def delete(self, obj=None):
+        """Deletes obj from __objects"""
+        if obj:
+            # create key used to search the obj
+            key = ("{}.{}").format(type(obj).__name__, obj.id)
+
+            # check if key exists
+            if key in FileStorage.__objects.keys():
+                # delete obj
+                del FileStorage.__objects[key]
