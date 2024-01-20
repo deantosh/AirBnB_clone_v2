@@ -7,10 +7,17 @@
 import uuid
 import models
 from datetime import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, func
+
+Base = declarative_base()
 
 
 class BaseModel:
     """defines a base class"""
+    id = Column(String(60), primary_key=True, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=func.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=func.utcnow())
 
     def __init__(self, *args, **kwargs):
         """intialize base class"""
@@ -30,18 +37,21 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
-            # link to storage -- set obj to __objects
-            models.storage.new(self)
-
     def __str__(self):
         """returns: str representation of the object"""
+        # pop '_sa_instance_state' from obj dict
+        obj_dict = self.__dict__.copy()
+        obj_dict.pop('_sa_instance_state', None)
         obj_str = "[{}] ({}) {}".format(
-            type(self).__name__, self.id, self.__dict__)
+            type(self).__name__, self.id, obj_dict)
         return obj_str
 
     def save(self):
         """updates updated_at time with current datetime"""
         self.updated_at = datetime.now()
+
+        # add new obj to __objects
+        models.storage.new(self)
 
         # link to storage -- saves __objects to file
         models.storage.save()
@@ -54,4 +64,12 @@ class BaseModel:
         obj_dict["created_at"] = obj_dict["created_at"].isoformat()
         obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
 
+        # remove key _sa_instance_state from dict created
+        obj_dict.pop('_sa_instance_state', None)
+
         return obj_dict
+
+    def delete(self):
+        """Delete the current instance of the storage"""
+        models.storage.delete(self)
+        models.storage.save()
