@@ -32,19 +32,21 @@ class DBStorage:
 
     def all(self, cls=None):
         objects = {}
-        class_list = [State, City]
-
+        # list of all the classes if cls is None
         if cls:
             class_list = [cls]
+        else:
+            class_list = [State, City, User]
 
-        for cls in class_list:
-            table = cls.__table__
-            objs = self.__session.query(cls).all()
+        for cls_item in class_list:
+            table = cls_item.__table__
+            objs = self.__session.query(cls_item).all()
             for obj in objs:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 objects[key] = obj
 
         return objects
+
 
     def new(self, obj):
         """add the object to the current db session"""
