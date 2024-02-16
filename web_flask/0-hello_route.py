@@ -1,7 +1,13 @@
 #!/usr/bin/python3
-# Script starts a Flask web application.
-
+"""
+Script starts a Flask web application.
+web application must be listening on 0.0.0.0, port 5000.
+Routes:
+   /: display “Hello HBNB!”
+Use the option strict_slashes=False
+"""
 from flask import Flask
+
 
 app = Flask(__name__)
 
