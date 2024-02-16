@@ -1,0 +1,1 @@
+This project focusses on creating and starting a Flask web application.
