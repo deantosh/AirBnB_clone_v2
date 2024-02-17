@@ -1,0 +1,1 @@
+Web application templates for the flask app.
