@@ -1,5 +1,4 @@
 """"Define DBStorage class"""
-
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
@@ -47,7 +46,6 @@ class DBStorage:
 
         return objects
 
-
     def new(self, obj):
         """add the object to the current db session"""
         self.__session.add(obj)
@@ -68,3 +66,7 @@ class DBStorage:
 
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)
+
+    def close(self):
+        """Call remove method on the private __session attribute"""
+        self.__session.remove()
