@@ -14,3 +14,10 @@ class City(BaseModel, Base):
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
     places = relationship(
         'Place', backref='cities', cascade='all, delete-orphan')
+
+    # Create instance for -- FileStorage
+    def __init__(self, name, state_id, *args, **kwargs):
+        """initialize City class"""
+        super().__init__(args, kwargs)
+        self.name = name
+        self.state_id = state_id
