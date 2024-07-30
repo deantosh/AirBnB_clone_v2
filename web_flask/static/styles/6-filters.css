@@ -46,8 +46,8 @@ ul.popover{
     border: 1px solid #dddddd;
     padding: 10px 15px;
     z-index: 1;
-	overflow-y: auto;
-	max-height: 300px;
+    overflow-y: auto;
+    max-height: 300px;
     margin-top: -1px
 }
 ul.popover h2{
